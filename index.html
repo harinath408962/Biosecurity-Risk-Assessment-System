@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biosecurity Risk Assessment System - Academic AI Portal</title>
+  <meta name="description" content="Explainable AI-Based Dual-Use Biosecurity Risk Assessment System for analyzing academic biology literature, predicting biosafety levels, and identifying Dual-Use Research of Concern.">
+  
+  <!-- CSS Stylesheets -->
+  <link rel="stylesheet" href="css/variables.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/home.css">
+  <link rel="stylesheet" href="css/results.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  
+  <!-- Chart.js CDN for Analytics -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+  
+  <!-- JavaScript Modules -->
+  <script src="js/config.js" defer></script>
+  <script src="js/samples.js" defer></script>
+  <script src="js/api.js" defer></script>
+  <script src="js/charts.js" defer></script>
+  <script src="js/app.js" defer></script>
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="nav-container">
+      <!-- Brand Logo & Title -->
+      <div class="brand-section">
+        <svg class="brand-logo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <circle cx="12" cy="11" r="3"/>
+          <line x1="12" y1="5" x2="12" y2="8"/>
+        </svg>
+        <div class="brand-info">
+          <span class="brand-title">Biosecurity Assessment</span>
+          <span class="brand-subtitle">Explainable AI Portal</span>
+        </div>
+      </div>
+
+      <!-- Navigation Tabs -->
+      <nav aria-label="Main Navigation">
+        <ul class="nav-menu">
+          <li>
+            <button class="nav-tab active" data-view="home" id="nav-tab-home">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+                <polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+              <span>Analyze</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-tab" data-view="results" id="nav-tab-results">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <polyline points="10 9 9 9 8 9"/>
+              </svg>
+              <span>Report</span>
+            </button>
+          </li>
+          <li>
+            <button class="nav-tab" data-view="dashboard" id="nav-tab-dashboard">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="3" width="7" height="9"/>
+                <rect x="14" y="3" width="7" height="5"/>
+                <rect x="14" y="12" width="7" height="9"/>
+                <rect x="3" y="16" width="7" height="5"/>
+              </svg>
+              <span>Dashboard</span>
+            </button>
+          </li>
+        </ul>
+      </nav>
+
+      <!-- Theme & Status Indicators -->
+      <div class="header-actions">
+        <div class="api-status-badge" title="Academic API Status Connection">
+          <div class="status-dot" id="api-status-dot"></div>
+          <span id="api-status-text">System Ready</span>
+        </div>
+        <button class="theme-toggle-btn" id="theme-toggle-btn" aria-label="Toggle Theme Mode">
+          <!-- Moon icon for light mode transition -->
+          <svg class="moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <!-- Sun icon for dark mode transition -->
+          <svg class="sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3"/>
+            <line x1="12" y1="21" x2="12" y2="23"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+            <line x1="1" y1="12" x2="3" y2="12"/>
+            <line x1="21" y1="12" x2="23" y2="12"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- App Main Content Views -->
+  <main class="app-container">
+
+    <!-- 1. HOME VIEW SECTION -->
+    <section class="view-section" id="home-view">
+      <!-- Title Abstract -->
+      <div class="intro-section">
+        <h1 class="intro-title">Explainable AI-Based Dual-Use Biosecurity Risk Assessment System</h1>
+        <p class="intro-desc">Evaluate biomedical manuscripts, project proposals, or DNA synthesis orders for pathogenic markers, aerosol dissemination enhancements, and biological dual-use concerns (DURC).</p>
+      </div>
+
+      <!-- Core Analysis Form -->
+      <div class="home-grid" id="input-panel">
+        
+        <!-- Input controls (left) -->
+        <div class="input-container">
+          <div class="glass-card" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.25rem;">
+            
+            <div class="input-header-row">
+              <label class="input-label" for="manuscript-input">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <span>Manuscript Abstract / Technical Literature Text</span>
+              </label>
+              <div class="word-count">Words: <span id="word-count-val">0</span></div>
+            </div>
+
+            <!-- Main Input Area -->
+            <div class="text-area-wrapper">
+              <textarea 
+                class="textarea-input" 
+                id="manuscript-input" 
+                placeholder="Paste the academic paper text or abstract here to evaluate biosecurity indicators, pathogens, or dual-use risk potentials..."
+                spellcheck="false"
+              ></textarea>
+            </div>
+
+            <!-- Upload Dropzone area -->
+            <div class="upload-dropzone" id="upload-dropzone">
+              <input type="file" class="file-input-hidden" id="file-input" accept=".txt,.pdf">
+              <div class="upload-icon-container">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </div>
+              <span class="upload-text">Drag & Drop Document or Click to Upload</span>
+              <span class="upload-subtext">Supports PDF or TXT research manuscripts (max 5MB)</span>
+            </div>
+
+            <!-- Selected File Preview Frame -->
+            <div class="selected-file-preview hidden" id="file-preview">
+              <div class="file-info">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                </svg>
+                <span class="file-name" id="file-name-span">document.pdf</span>
+                <span class="file-size" id="file-size-span">(45.2 KB)</span>
+              </div>
+              <button class="remove-file-btn" id="remove-file-btn" aria-label="Clear loaded document">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Action buttons -->
+            <div class="action-bar">
+              <button class="btn btn-secondary" id="clear-text-btn">Clear All</button>
+              <div class="right-actions">
+                <button class="btn btn-primary" id="analyze-btn" disabled>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="5 3 19 12 5 21 5 3"/>
+                  </svg>
+                  <span>Analyze Biosecurity Risk</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Pre-set Templates (right) -->
+        <div class="templates-container">
+          <h2 class="section-subtitle">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+            </svg>
+            <span>Academic Case Templates</span>
+          </h2>
+          
+          <button class="template-card" data-template="low" id="template-card-low">
+            <div class="template-card-header">
+              <span class="template-title">1. Yeast Biofuel Engineering</span>
+              <span class="risk-badge low">Low Risk</span>
+            </div>
+            <p class="template-snippet">Metabolic optimization of Saccharomyces cerevisiae strains for xylose fermentation in biofuels production. BSL-1 standard containment.</p>
+          </button>
+          
+          <button class="template-card" data-template="medium" id="template-card-medium">
+            <div class="template-card-header">
+              <span class="template-title">2. H5N1 Aerosol Stability</span>
+              <span class="risk-badge medium">Medium Risk</span>
+            </div>
+            <p class="template-snippet">Studies evaluating droplet stability of avian influenza lineages under relative humidity in environmental exposure chambers.</p>
+          </button>
+          
+          <button class="template-card" data-template="high" id="template-card-high">
+            <div class="template-card-header">
+              <span class="template-title">3. Spore Dissemination DURC</span>
+              <span class="risk-badge high">High Risk</span>
+            </div>
+            <p class="template-snippet">Exosporium surface changes in Bacillus anthracis via plasmid recombinations to enhance physical aerosol dispersion efficiency.</p>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Analysis Loading Overlay -->
+      <div class="glass-card loading-overlay hidden" id="loading-overlay">
+        <div class="spinner-ring"></div>
+        <div class="loading-text">Analyzing Manuscript DNA & Text</div>
+        <div class="loading-progress-bar">
+          <div class="loading-progress-fill" id="loading-progress-fill"></div>
+        </div>
+        <div class="loading-subtitle" id="loading-status-text">Scanning document formatting...</div>
+      </div>
+    </section>
+
+    <!-- 2. RESULTS VIEW SECTION -->
+    <section class="view-section hidden" id="results-view">
+      
+      <!-- Results Header bar -->
+      <div class="results-header-actions">
+        <div class="results-title-row">
+          <button class="btn btn-secondary" id="back-to-input-btn" style="padding: 0.5rem 1rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="19" y1="12" x2="5" y2="12"></line>
+              <polyline points="12 19 5 12 12 5"/>
+            </svg>
+            <span>Analyze Another</span>
+          </button>
+          <h1 class="academic-title" style="font-size: 1.6rem;">Biosecurity Risk Assessment Report</h1>
+        </div>
+        <div style="display: flex; gap: 0.75rem;">
+          <button class="btn btn-secondary" id="export-json-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="7 10 12 15 17 10"/>
+              <line x1="12" y1="15" x2="12" y2="3"/>
+            </svg>
+            <span>Export JSON</span>
+          </button>
+          <button class="btn btn-primary" id="export-pdf-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"/>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            <span>Print Report</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Core metrics summaries (4 cards) -->
+      <div class="results-grid">
+        
+        <!-- Score Gauge -->
+        <div class="glass-card metric-card">
+          <span class="metric-label">Biosecurity Risk Score</span>
+          <div id="results-gauge-container">
+            <!-- Programmatic SVG Gauge renders here -->
+          </div>
+        </div>
+
+        <!-- Level Badge -->
+        <div class="glass-card metric-card">
+          <span class="metric-label">Assessed Risk Severity</span>
+          <div class="metric-val" style="margin-top: 1rem; margin-bottom: 0.5rem;">
+            <span class="risk-badge" id="results-risk-badge">Low Risk</span>
+          </div>
+          <span class="metric-sub" style="font-size: 0.75rem;">Regulatory DURC Tiering</span>
+          
+          <div class="detected-indicators-summary-container">
+            <span class="summary-label">Detected Indicators</span>
+            <div id="results-indicators-summary" class="indicators-summary-chips">
+              <!-- Dynamically populated chips -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Containment recommendation -->
+        <div class="glass-card metric-card">
+          <span class="metric-label">Containment Standard</span>
+          <div class="bsl-graphic" id="results-bsl-text">BSL-1</div>
+          <span class="metric-sub">Recommended Laboratory</span>
+        </div>
+
+        <!-- Confidence indicators -->
+        <div class="glass-card metric-card">
+          <span class="metric-label">Model Confidence</span>
+          <div class="metric-val" id="results-confidence-text" style="font-size: 2.2rem; font-weight: 700; margin-bottom: 0.75rem;">92%</div>
+          <div class="confidence-container">
+            <div class="confidence-bar-bg">
+              <div class="confidence-bar-fill" id="results-confidence-fill" style="width: 92%;"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Explanation and highlights dual pane -->
+      <div class="explanation-grid">
+        
+        <!-- Left: raw manuscript reader -->
+        <div class="glass-card manuscript-card">
+          <div class="manuscript-header">
+            <span class="manuscript-tag">Analyzed Abstract / Research Text</span>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem;">
+              Click highlighted phrases to jump to target regulatory hazards.
+            </div>
+          </div>
+          <article class="manuscript-body" id="results-manuscript-body">
+            <!-- Marked up paragraphs render here -->
+          </article>
+        </div>
+
+        <!-- Right: explanations list -->
+        <div>
+          <div class="glass-card" style="margin-bottom: 1.5rem;">
+            <h2 class="panel-title">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+              <span>Explainable AI Risk Summary</span>
+            </h2>
+            <p id="results-explanation-p" style="font-size: 0.9rem; line-height: 1.6; color: var(--text-secondary);">
+              Explanation loads here...
+            </p>
+          </div>
+
+          <h2 class="panel-title" style="margin-top: 1.5rem; margin-bottom: 1rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              <line x1="12" y1="9" x2="12" y2="13"/>
+              <circle cx="12" cy="17" r="0.01"/>
+            </svg>
+            <span>Identified Regulatory Indicators</span>
+          </h2>
+          
+          <div class="indicators-list" id="results-indicators-list">
+            <!-- Indicator cards populate dynamically -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. DASHBOARD VIEW SECTION -->
+    <section class="view-section hidden" id="dashboard-view">
+      <div class="dashboard-layout">
+        
+        <!-- Summary Cards (Row 1) -->
+        <div class="stats-grid">
+          
+          <div class="glass-card stat-card">
+            <div class="stat-icon-container">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Total Evaluated</span>
+              <span class="stat-val" id="stat-total-analyses">0</span>
+              <span class="stat-change positive">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                <span>Directory Database</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="glass-card stat-card">
+            <div class="stat-icon-container">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">High-Risk Flag Rate</span>
+              <span class="stat-val" id="stat-high-rate">0%</span>
+              <span class="stat-change negative">
+                <span>DURC Compliance</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="glass-card stat-card">
+            <div class="stat-icon-container">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Average Risk Index</span>
+              <span class="stat-val" id="stat-avg-risk">0%</span>
+              <span class="stat-change">
+                <span>Calculated Mean</span>
+              </span>
+            </div>
+          </div>
+
+          <div class="glass-card stat-card">
+            <div class="stat-icon-container">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+              </svg>
+            </div>
+            <div class="stat-info">
+              <span class="stat-label">Recommended Containment Levels</span>
+              <span class="stat-val" id="stat-alerts-active">0</span>
+              <span class="stat-change negative">
+                <span>BSL-3/BSL-4 Recommended</span>
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Charts canvases (Row 2) -->
+        <div class="charts-grid">
+          
+          <!-- Distribution chart -->
+          <div class="glass-card chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path><path d="M2 12h20"></path></svg>
+                <span>Biosecurity Risk Distribution</span>
+              </h3>
+            </div>
+            <div class="chart-container-wrapper">
+              <canvas id="distribution-chart"></canvas>
+            </div>
+          </div>
+
+          <!-- Trend line chart -->
+          <div class="glass-card chart-card">
+            <div class="chart-header">
+              <h3 class="chart-title">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                <span>Historical Risk Trends (Last 8 Runs)</span>
+              </h3>
+            </div>
+            <div class="chart-container-wrapper">
+              <canvas id="trend-chart"></canvas>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Table history list (Row 3) -->
+        <div class="glass-card table-card">
+          
+          <div class="table-header-row">
+            <h3 class="chart-title">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-6"></path><path d="M12 2v4a2 2 0 0 0 2 2h4"></path><path d="M6 4h6"></path><path d="M18 19l-4-4 4-4"></path><path d="M14 15h8"></path></svg>
+              <span>Recent Risk Analyses Directory</span>
+            </h3>
+            
+            <div class="table-filters">
+              <div class="search-input-wrapper">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                <input type="text" class="search-input" id="dashboard-search" placeholder="Search manuscript title...">
+              </div>
+              
+              <select class="filter-select" id="dashboard-filter" aria-label="Filter by Risk Severity">
+                <option value="All">All Risk Levels</option>
+                <option value="High">High Risk</option>
+                <option value="Medium">Medium Risk</option>
+                <option value="Low">Low Risk</option>
+              </select>
+
+              <button class="btn btn-secondary" id="clear-history-btn" style="padding: 0.5rem 1rem; font-size: 0.85rem; color: var(--risk-high);">
+                Purge Database
+              </button>
+            </div>
+          </div>
+
+          <!-- History Table -->
+          <div class="table-wrapper">
+            <table class="history-table" id="history-table">
+              <thead>
+                <tr>
+                  <th scope="col">Evaluation Date</th>
+                  <th scope="col">Document Target</th>
+                  <th scope="col">Risk Severity</th>
+                  <th scope="col">Risk Score (%)</th>
+                  <th scope="col">Report Analysis</th>
+                </tr>
+              </thead>
+              <tbody id="history-table-body">
+                <!-- Dynamically populated via app.js -->
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- App Footer -->
+  <footer class="app-footer">
+    <div class="footer-content">
+      <div>
+        <strong>Explainable AI Dual-Use Biosecurity Portal</strong>
+        <div style="margin-top: 0.25rem;">Academic Reference System • BSL Vector Compliance Analyzer</div>
+      </div>
+      <ul class="footer-links">
+        <li>© 2026 Biosecurity Research Portal</li>
+        <li><a href="#" style="color: var(--text-muted);">Privacy Statement</a></li>
+        <li><a href="#" style="color: var(--text-muted);">Standard Terms</a></li>
+      </ul>
+    </div>
+  </footer>
+
+</body>
+</html>
