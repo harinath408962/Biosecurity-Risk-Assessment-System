@@ -6,87 +6,213 @@ class BiosecurityAPI {
     this.rules = [
       {
         keyword: "Bacillus anthracis",
-        name: "Select Agent Identified (B. anthracis)",
+        name: "Bacillus anthracis",
+        title: "Bacillus anthracis",
         category: "Pathogen Identification",
         level: "High",
-        explanation: "Bacillus anthracis is a Tier 1 Select Agent with high lethality and history of weaponization. Research involving genetic modification of this agent is subject to strict DURC (Dual-Use Research of Concern) oversight."
+        severity: "High",
+        meaning: "A Tier 1 select biological agent (bacteria) that causes anthrax.",
+        whyFlagged: "It has high lethality, extreme environmental persistence, and a historical association with biological weapons."
       },
       {
         keyword: "anthrax",
-        name: "Select Agent Mention (Anthrax)",
+        name: "Anthrax",
+        title: "Anthrax",
         category: "Pathogen Identification",
         level: "High",
-        explanation: "Mentions of anthrax, particularly in association with genetic manipulation or dissemination enhancement, flag significant biosecurity concerns."
+        severity: "High",
+        meaning: "The serious bacterial disease caused by Bacillus anthracis.",
+        whyFlagged: "Any discussion of anthrax research flags significant biosecurity oversight requirements due to its history of weaponization."
       },
       {
         keyword: "Ebola",
-        name: "High-Consequence Pathogen (Ebola)",
+        name: "Ebola",
+        title: "Ebola",
         category: "Pathogen Identification",
         level: "High",
-        explanation: "Ebola virus is a high-consequence pathogen causing severe hemorrhagic fever. Any manipulation of its transmission vectors or viral stability requires maximum BSL-4 containment."
+        severity: "High",
+        meaning: "A high-consequence virus that causes severe hemorrhagic fever in humans.",
+        whyFlagged: "Ebola is highly lethal with limited treatment options, requiring maximum Biosafety Level 4 (BSL-4) containment."
       },
       {
         keyword: "aerosolization",
-        name: "Dissemination Enhancement (Aerosolization)",
+        name: "Aerosolization",
+        title: "Aerosolization",
         category: "Dissemination & Delivery",
         level: "High",
-        explanation: "Research specifically aiming to optimize the aerosolization efficiency of bacterial spores or viral particles facilitates inhalation delivery, a primary pathway for biological weapons."
+        severity: "High",
+        meaning: "The physical process of suspending biological particles or liquids in the air.",
+        whyFlagged: "Optimizing aerosolization enables inhalation delivery, which is the primary pathway of concern for biological weapons."
       },
       {
         keyword: "vaccine-induced immunity",
-        name: "Immune Evasion / Resistance",
+        name: "Vaccine-Induced Immunity Evasion",
+        title: "Vaccine-Induced Immunity Evasion",
         category: "Host-Pathogen Interactions",
         level: "High",
-        explanation: "Bypassing vaccine-induced immunity or host defenses represents a dangerous modification that renders standard medical countermeasures (like vaccinations) ineffective."
+        severity: "High",
+        meaning: "Modifying a pathogen to bypass the protection provided by existing vaccines.",
+        whyFlagged: "Evasion of vaccines renders medical countermeasures useless, which can trigger uncontrollable outbreaks."
       },
       {
         keyword: "lethality",
-        name: "Virulence / Lethality Enhancement",
+        name: "Lethality",
+        title: "Lethality",
         category: "Functional Modification",
         level: "High",
-        explanation: "Enhancing the lethality, virulence, or clinical severity of a pathogen directly increases the public health risk and potential damage if released."
+        severity: "High",
+        meaning: "The capability of a pathogen or biological toxin to cause death.",
+        whyFlagged: "Enhancing lethality directly increases the severity of public health consequences if the agent is released."
       },
       {
         keyword: "spore wall modifications",
-        name: "Dissemination Optimization",
+        name: "Spore Wall Modifications",
+        title: "Spore Wall Modifications",
         category: "Dissemination & Delivery",
         level: "High",
-        explanation: "Altering the outer spore coats to prevent static aggregation increases the suspension time and stability of airborne spores, optimizing inhalational risk."
+        severity: "High",
+        meaning: "Altering the outer shell of bacterial spores to prevent them from clumping together.",
+        whyFlagged: "This physical modification keeps spores suspended in the air longer, increasing the inhalation risk."
       },
       {
         keyword: "exosporium",
-        name: "Spore Surface Modification",
+        name: "Exosporium",
+        title: "Exosporium",
         category: "Functional Modification",
         level: "High",
-        explanation: "Modifying the exosporium layers of spore-forming pathogens can alter physical characteristics like hydrophobicity and binding properties, affecting environmental persistence."
+        severity: "High",
+        meaning: "The balloon-like outermost layer of certain bacterial spores.",
+        whyFlagged: "Altering the exosporium changes how spores disperse and persist in the environment, which can optimize delivery."
       },
       {
         keyword: "H5N1",
-        name: "Potential Pandemic Pathogen (H5N1)",
+        name: "H5N1",
+        title: "H5N1",
         category: "Pathogen Identification",
         level: "Medium",
-        explanation: "H5N1 Highly Pathogenic Avian Influenza has a high mortality rate in humans. Research regarding its aerosol transmission potential is highly scrutinized due to pandemic risks."
+        severity: "Medium",
+        meaning: "A highly pathogenic strain of avian influenza (bird flu) virus.",
+        whyFlagged: "H5N1 has a high mortality rate in birds and humans; research on its transmission carries pandemic risk."
       },
       {
         keyword: "aerosol transmission",
-        name: "Aerosol Transmission Studies",
+        name: "Aerosol Transmission",
+        title: "Aerosol Transmission",
         category: "Transmission Potential",
         level: "Medium",
-        explanation: "Investigating aerosol transmission parameters of respiratory pathogens is critical for public health, but carries dual-use risks if transmission efficiency is accidentally or deliberately increased."
+        severity: "Medium",
+        meaning: "The spread of biological agents through fine airborne droplets.",
+        whyFlagged: "Investigating airborne pathways is vital for public health but carries dual-use risk if transmission efficiency is enhanced."
       },
       {
         keyword: "exposure chamber",
-        name: "High-Containment Experimental Systems",
+        name: "Exposure Chamber",
+        title: "Exposure Chamber",
         category: "Experimental Apparatus",
         level: "Medium",
-        explanation: "Use of specialized aerosol exposure chambers indicating research into inhalation infectivity parameters. Requires strict safety controls and biosafety verification."
+        severity: "Medium",
+        meaning: "A specialized laboratory enclosure used to expose biological targets to aerosols.",
+        whyFlagged: "This equipment indicates active research into inhalation infectivity and airborne transmission parameters."
       },
       {
         keyword: "dual-use",
-        name: "Explicit Dual-Use Mention",
+        name: "Dual Use",
+        title: "Dual Use",
         category: "Policy Compliance",
         level: "Medium",
-        explanation: "The text explicitly mentions dual-use implications, indicating that the researchers are aware of biosecurity oversight requirements (DURC)."
+        severity: "Medium",
+        meaning: "Technologies or biological materials with both beneficial civilian and harmful military applications.",
+        whyFlagged: "Explicit mention highlights awareness of regulatory oversight and Institutional Biosafety Committee review."
+      },
+      {
+        keyword: "pathogen",
+        name: "Pathogen",
+        title: "Pathogen",
+        category: "Pathogen Identification",
+        level: "Medium",
+        severity: "Medium",
+        meaning: "Any microorganism (like a virus, bacterium, or fungus) that causes disease.",
+        whyFlagged: "Identifying pathogenic research establishes the baseline biosafety precautions required for the laboratory."
+      },
+      {
+        keyword: "transmission",
+        name: "Transmission",
+        title: "Transmission",
+        category: "Transmission Potential",
+        level: "Medium",
+        severity: "Medium",
+        meaning: "The movement of an infectious agent from one host to another.",
+        whyFlagged: "Studies analyzing transmission dynamics require monitoring to prevent the creation of highly contagious strains."
+      },
+      {
+        keyword: "crispr",
+        name: "CRISPR",
+        title: "CRISPR",
+        category: "Genetic Engineering",
+        level: "Medium",
+        severity: "Medium",
+        meaning: "A molecular technology used to make precise, targeted edits to DNA sequences.",
+        whyFlagged: "CRISPR is a widely used tool with many legitimate research and medical applications. It only becomes a biosecurity concern when combined with pathogen modification, virulence enhancement, transmission enhancement, or other dual-use indicators."
+      },
+      {
+        keyword: "gene editing",
+        name: "Gene Editing",
+        title: "Gene Editing",
+        category: "Genetic Engineering",
+        level: "Medium",
+        severity: "Medium",
+        meaning: "A set of technologies that enable scientists to change an organism's genetic material.",
+        whyFlagged: "These methods have broad positive medical applications, but are flagged because they can alter biological agent characteristics. They present biosecurity risks only when modifying pathogens to enhance virulence or transmission."
+      },
+      {
+        keyword: "genetic engineering",
+        name: "Genetic Engineering",
+        title: "Genetic Engineering",
+        category: "Genetic Engineering",
+        level: "Medium",
+        severity: "Medium",
+        meaning: "The direct modification of an organism's genes using biotechnology.",
+        whyFlagged: "Widely used in agriculture and medicine, genetic engineering is flagged because it can alter biological agents. It becomes a biosecurity concern only when combined with pathogen modification, virulence enhancement, or transmission enhancement."
+      },
+      {
+        keyword: "gain of function",
+        name: "Gain of Function",
+        title: "Gain of Function",
+        category: "Functional Modification",
+        level: "High",
+        severity: "High",
+        meaning: "Research that enhances a pathogen's transmissibility, lethality, host range, or immune evasion.",
+        whyFlagged: "Enhancing pathogenic traits carries significant biosafety risk and requires rigorous institutional and federal oversight."
+      },
+      {
+        keyword: "toxin",
+        name: "Toxin",
+        title: "Toxin",
+        category: "Pathogen Identification",
+        level: "High",
+        severity: "High",
+        meaning: "A poisonous substance produced by a living organism (e.g., ricin, botulinum).",
+        whyFlagged: "Biological toxins are extremely potent chemical/biological threats, and their modification or synthesis is heavily regulated."
+      },
+      {
+        keyword: "biosafety",
+        name: "Biosafety",
+        title: "Biosafety",
+        category: "Policy Compliance",
+        level: "Medium",
+        severity: "Medium",
+        meaning: "The collection of containment principles and safety practices used when handling infectious materials.",
+        whyFlagged: "Ensuring proper biosafety containment standards prevents accidental release or exposure to laboratory personnel."
+      },
+      {
+        keyword: "virulence",
+        name: "Virulence",
+        title: "Virulence",
+        category: "Functional Modification",
+        level: "High",
+        severity: "High",
+        meaning: "Ability of a pathogen to cause disease severity.",
+        whyFlagged: "Research discussing increased virulence may indicate enhancement of disease-causing capability."
       }
     ];
   }
@@ -176,9 +302,13 @@ class BiosecurityAPI {
           id: indicatorIndex,
           keyword: indicatorKeyword,
           name: matchingRule ? matchingRule.name : `Detected Indicator (${indicatorKeyword})`,
+          title: matchingRule ? (matchingRule.title || matchingRule.name) : `Detected Indicator (${indicatorKeyword})`,
           category: matchingRule ? matchingRule.category : "Biosecurity Indicator",
           level: matchingRule ? matchingRule.level : riskLevel,
-          explanation: matchingRule ? matchingRule.explanation : `The indicator '${indicatorKeyword}' was identified by the backend model as a potential biosecurity risk marker.`
+          severity: matchingRule ? (matchingRule.severity || matchingRule.level) : riskLevel,
+          meaning: matchingRule ? matchingRule.meaning : "An indicator identified by the system.",
+          whyFlagged: matchingRule ? matchingRule.whyFlagged : "Flagged as a potential indicator of concern.",
+          explanation: matchingRule ? (matchingRule.whyFlagged || matchingRule.explanation) : `The indicator '${indicatorKeyword}' was identified by the backend model as a potential biosecurity risk marker.`
         };
 
         processedIndicators.push(ruleObj);
@@ -192,15 +322,8 @@ class BiosecurityAPI {
       });
 
       // Generate dynamic client-side explanation summary based on riskLevel, BSL, and indicators
-      let explanationSummary = "";
-      const indicatorListStr = indicators.length > 0 ? indicators.join(', ') : "none";
-      if (riskLevel === "High") {
-        explanationSummary = `Critical dual-use risks detected. The document contains high-consequence biosecurity indicators (${indicatorListStr}). Such research falls under Dual-Use Research of Concern (DURC) guidelines and requires Biosafety Level 3 or 4 (${bsl}) containment controls.`;
-      } else if (riskLevel === "Medium") {
-        explanationSummary = `Moderate biosecurity implications identified. Markers detected: ${indicatorListStr}. Standard safety protocols, institutional risk evaluations, and Biosafety Level (${bsl}) standard containment controls are advised.`;
-      } else {
-        explanationSummary = `No major biosecurity hazards were flagged by the backend. Tested text is considered low risk. Recommended laboratory containment standard: ${bsl}.`;
-      }
+      const explanationSummary = this._generateExplanationSummary(riskLevel, processedIndicators);
+      const classificationReason = this._generateClassificationReason(riskLevel, bsl, processedIndicators);
 
       return {
         timestamp: new Date().toISOString(),
@@ -211,6 +334,7 @@ class BiosecurityAPI {
         bslLevel: bsl,
         confidenceScore: predictionScore, // Map prediction score to confidence score as well
         explanation: explanationSummary,
+        classificationReason: classificationReason,
         indicators: processedIndicators,
         isOffline: false
       };
@@ -237,6 +361,105 @@ class BiosecurityAPI {
     });
   }
 
+  _generateExplanationSummary(riskLevel, indicators) {
+    if (riskLevel === "Low" || !indicators || indicators.length === 0) {
+      return `No major biosecurity indicators were detected.
+The document appears focused on standard biomedical or life-science research without evidence of pathogen enhancement, transmission optimization, or dual-use concerns.`;
+    }
+
+    const groups = [];
+    const lowercaseInds = indicators.map(ind => ind.keyword.toLowerCase());
+
+    const hasVirulence = lowercaseInds.some(ind => ["virulence", "lethality", "gain of function", "toxin", "vaccine-induced immunity"].includes(ind));
+    const hasAerosol = lowercaseInds.some(ind => ["aerosol transmission", "aerosolization", "spore wall modifications", "exosporium", "exposure chamber", "transmission"].includes(ind));
+    const hasPathogen = lowercaseInds.some(ind => ["bacillus anthracis", "anthrax", "ebola", "pathogen"].includes(ind));
+    const hasGenetic = lowercaseInds.some(ind => ["crispr", "gene editing", "genetic engineering"].includes(ind));
+    const hasPolicy = lowercaseInds.some(ind => ["dual-use", "dual use", "biosafety"].includes(ind));
+
+    if (hasVirulence) groups.push("Virulence enhancement indicators");
+    if (hasAerosol) groups.push("Aerosol transmission indicators");
+    if (hasPathogen) groups.push("Pathogen-related research terms");
+    if (hasGenetic) groups.push("Genetic engineering methods");
+    if (hasPolicy) groups.push("Policy & compliance terms");
+
+    if (groups.length === 0) {
+      groups.push("Potential biosecurity risk markers");
+    }
+
+    const bullets = groups.map(g => `• ${g}`).join("\n");
+    
+    return `${riskLevel} Risk was assigned because the document contains:
+${bullets}
+
+These indicators are commonly associated with dual-use biological research requiring additional review.`;
+  }
+
+  _generateClassificationReason(riskLevel, bslLevel, indicators) {
+    if (!indicators || indicators.length === 0) {
+      return `The document was classified as LOW RISK because no biosecurity or dual-use indicators were detected. The content represents standard biological research, and therefore ${bslLevel} containment is recommended.`;
+    }
+
+    // Format indicators list into a natural English string: "A", "both A and B", or "A, B, and C"
+    const formattedIndicators = indicators.map(ind => ind.keyword.toLowerCase());
+    let indicatorsText = "";
+    if (formattedIndicators.length === 1) {
+      indicatorsText = `the "${formattedIndicators[0]}" indicator was`;
+    } else if (formattedIndicators.length === 2) {
+      indicatorsText = `both "${formattedIndicators[0]}" and "${formattedIndicators[1]}" indicators were`;
+    } else {
+      const listStr = formattedIndicators.slice(0, -1).map(i => `"${i}"`).join(", ");
+      indicatorsText = `${listStr}, and "${formattedIndicators[formattedIndicators.length - 1]}" indicators were`;
+    }
+
+    // Map indicators to their semantic categories
+    const categories = [];
+    formattedIndicators.forEach(ind => {
+      if (ind.includes("anthracis") || ind.includes("anthrax")) {
+        categories.push("research involving Tier 1 select agents");
+      } else if (ind.includes("ebola")) {
+        categories.push("highly lethal viral pathogens");
+      } else if (ind.includes("aerosol") || ind.includes("spore wall") || ind.includes("exosporium") || ind.includes("chamber")) {
+        categories.push("airborne dissemination potential");
+      } else if (ind.includes("immunity")) {
+        categories.push("immune evasion and countermeasure resistance");
+      } else if (ind.includes("lethality") || ind.includes("virulence") || ind.includes("gain of function") || ind.includes("toxin")) {
+        categories.push("increased pathogen impact and hazard enhancement");
+      } else if (ind.includes("h5n1") || ind.includes("pathogen") || ind.includes("transmission")) {
+        categories.push("pathogen studies and transmission risk");
+      } else if (ind.includes("crispr") || ind.includes("gene editing") || ind.includes("genetic engineering")) {
+        categories.push("gene modification technologies");
+      } else if (ind.includes("dual") || ind.includes("biosafety")) {
+        categories.push("dual-use policies and containment");
+      }
+    });
+
+    // Deduplicate categories
+    const uniqueCategories = [...new Set(categories)];
+    let categorySummary = "";
+    if (uniqueCategories.length === 0) {
+      categorySummary = "research involving biological safety risks";
+    } else if (uniqueCategories.length === 1) {
+      categorySummary = uniqueCategories[0];
+    } else if (uniqueCategories.length === 2) {
+      categorySummary = `${uniqueCategories[0]} and ${uniqueCategories[1]}`;
+    } else {
+      categorySummary = `${uniqueCategories.slice(0, -1).join(", ")}, and ${uniqueCategories[uniqueCategories.length - 1]}`;
+    }
+
+    // Why BSL was recommended
+    let bslReason = "";
+    if (bslLevel === "BSL-4") {
+      bslReason = "maximum containment (BSL-4) is recommended to prevent exposure to lethal agents with no widely available treatment";
+    } else if (bslLevel === "BSL-3") {
+      bslReason = "BSL-3 containment is recommended to control inhalation risks and restrict access to dangerous pathogens that may spread through the air";
+    } else if (bslLevel === "BSL-2") {
+      bslReason = "BSL-2 containment is recommended for moderate-risk biological agents that require restricted access";
+    } else {
+      bslReason = "BSL-1 containment is sufficient for low-risk, standard laboratory procedures";
+    }
+
+    return `The document was classified as ${riskLevel.toUpperCase()} RISK because ${indicatorsText} detected. Together these suggest ${categorySummary}. Therefore, ${bslReason}.`;
+  }
 
   /**
    * Performs the mock parsing logic
@@ -259,9 +482,13 @@ class BiosecurityAPI {
           id: indicatorIndex,
           keyword: rule.keyword,
           name: rule.name,
+          title: rule.title || rule.name,
           category: rule.category,
           level: rule.level,
-          explanation: rule.explanation
+          severity: rule.severity || rule.level,
+          meaning: rule.meaning,
+          whyFlagged: rule.whyFlagged,
+          explanation: rule.whyFlagged || rule.explanation
         });
 
         // Inject highlighters into copy of text.
@@ -302,30 +529,28 @@ class BiosecurityAPI {
       if (text.toLowerCase().includes("ebola")) {
         bslLevel = "BSL-4";
       }
-
-      explanationSummary = `Critical dual-use risks detected. The document contains references to biological select agents (Tier 1) and genetic modification vectors that optimize spore environmental resistance and transmission efficacy. Such dual-use research of concern (DURC) falls under rigorous regulatory compliance and requires strict physical containment (${bslLevel}).`;
     } else if (medCount > 0) {
       riskLevel = "Medium";
       // Risk score: scale based on medium indicators (35% to 65%)
       riskScore = Math.min(35 + (medCount * 8), 65);
-      bslLevel = "BSL-3"; // Aerosol studies of influenza generally require BSL-3
+      bslLevel = "BSL-2"; // default
       confidenceScore = Math.floor(82 + Math.random() * 8);
 
-      if (text.toLowerCase().includes("influenza") || text.toLowerCase().includes("h5n1")) {
+      if (text.toLowerCase().includes("influenza") || text.toLowerCase().includes("h5n1") || text.toLowerCase().includes("aerosol")) {
         bslLevel = "BSL-3";
       } else {
         bslLevel = "BSL-2";
       }
-
-      explanationSummary = `Moderate biosecurity implications identified. The manuscript describes aerosol stability trials or controlled transmission experiments using influenza variants. While no explicit genetic gain-of-function enhancement was flagged, respiratory transmission pathways present significant dual-use exposure vectors. Enhanced containment controls (${bslLevel}) are advised.`;
     } else {
       riskLevel = "Low";
       // Risk score: (5% to 20%)
       riskScore = Math.max(5, Math.floor(5 + Math.random() * 15));
       bslLevel = "BSL-1";
       confidenceScore = Math.floor(85 + Math.random() * 10);
-      explanationSummary = `No biosecurity indicators or select agents were flagged. The research describes standard bioindustrial fermentation processes utilizing non-pathogenic laboratory host organisms (Saccharomyces cerevisiae) to synthesize biofuels. The risk of dual-use diversion is negligible. Standard Biosafety Level 1 (BSL-1) practices are appropriate.`;
     }
+
+    explanationSummary = this._generateExplanationSummary(riskLevel, detectedIndicators);
+    const classificationReason = this._generateClassificationReason(riskLevel, bslLevel, detectedIndicators);
 
     return {
       timestamp: new Date().toISOString(),
@@ -336,6 +561,7 @@ class BiosecurityAPI {
       bslLevel: bslLevel,
       confidenceScore: confidenceScore,
       explanation: explanationSummary,
+      classificationReason: classificationReason,
       indicators: detectedIndicators
     };
   }
@@ -343,3 +569,4 @@ class BiosecurityAPI {
 
 // Export class to window
 window.BiosecurityAPI = new BiosecurityAPI();
+

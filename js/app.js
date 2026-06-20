@@ -45,9 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
     // Results Page Elements
     resultsBadge: document.getElementById('results-risk-badge'),
     resultsBslText: document.getElementById('results-bsl-text'),
+    resultsBslName: document.getElementById('results-bsl-name'),
+    resultsBslDesc: document.getElementById('results-bsl-desc'),
+    resultsBslReason: document.getElementById('results-bsl-reason'),
     resultsConfidenceText: document.getElementById('results-confidence-text'),
     resultsConfidenceFill: document.getElementById('results-confidence-fill'),
     resultsExplanation: document.getElementById('results-explanation-p'),
+    resultsClassificationReasonDetails: document.getElementById('results-classification-reason-details'),
     resultsManuscriptBody: document.getElementById('results-manuscript-body'),
     resultsIndicatorsList: document.getElementById('results-indicators-list'),
     exportJsonBtn: document.getElementById('export-json-btn'),
@@ -433,14 +437,68 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // --- RESULTS PAGE DISPLAY ---
   function renderResultsReport(report) {
+    const bslMetadata = {
+      "BSL-1": {
+        name: "Low Containment Laboratory",
+        desc: "Suitable for low-risk biological materials. Standard laboratory practices are sufficient."
+      },
+      "BSL-2": {
+        name: "Moderate Containment Laboratory",
+        desc: "Used for biological agents that require additional safety precautions and restricted access."
+      },
+      "BSL-3": {
+        name: "High Containment Laboratory",
+        desc: "Used for potentially dangerous pathogens that may spread through the air and cause serious disease."
+      },
+      "BSL-4": {
+        name: "Maximum Containment Laboratory",
+        desc: "Reserved for extremely dangerous pathogens with severe health consequences and no widely available treatment."
+      }
+    };
+
     // 1. Update text variables
     el.resultsBslText.textContent = report.bslLevel;
-    el.resultsConfidenceText.textContent = `${report.confidenceScore}%`;
+    const meta = bslMetadata[report.bslLevel] || bslMetadata["BSL-1"];
+    if (el.resultsBslName) el.resultsBslName.textContent = meta.name;
+    if (el.resultsBslDesc) el.resultsBslDesc.textContent = meta.desc;
+
+    // Construct BSL Reason
+    let bslReasonText = "Reason: No indicators detected.";
+    if (report.indicators && report.indicators.length > 0) {
+      const activeKeywords = report.indicators.map(ind => {
+        const title = ind.title || ind.name;
+        if (["CRISPR", "Ebola", "H5N1", "Bacillus anthracis"].includes(title)) {
+          return title;
+        }
+        return title.toLowerCase();
+      });
+      if (activeKeywords.length === 1) {
+        bslReasonText = `Reason: ${activeKeywords[0]} indicator was detected.`;
+      } else if (activeKeywords.length === 2) {
+        bslReasonText = `Reason: ${activeKeywords[0]} and ${activeKeywords[1]} indicators were detected.`;
+      } else {
+        bslReasonText = `Reason: ${activeKeywords.slice(0, -1).join(', ')}, and ${activeKeywords[activeKeywords.length - 1]} indicators were detected.`;
+      }
+    }
+    if (el.resultsBslReason) el.resultsBslReason.textContent = bslReasonText;
+
+    if (el.resultsConfidenceText) el.resultsConfidenceText.textContent = `${report.confidenceScore}%`;
     el.resultsExplanation.textContent = report.explanation;
     
     // Confidence linear progress bar
-    el.resultsConfidenceFill.className = "confidence-bar-fill";
-    el.resultsConfidenceFill.style.width = `${report.confidenceScore}%`;
+    if (el.resultsConfidenceFill) {
+      el.resultsConfidenceFill.className = "confidence-bar-fill";
+      el.resultsConfidenceFill.style.width = `${report.confidenceScore}%`;
+      
+      // Apply color styling to confidence fill bar
+      if (report.riskLevel === 'High') {
+        el.resultsConfidenceFill.style.backgroundColor = 'var(--risk-high)';
+      } else if (report.riskLevel === 'Medium') {
+        el.resultsConfidenceFill.style.backgroundColor = 'var(--risk-medium)';
+      } else {
+        el.resultsConfidenceFill.style.backgroundColor = 'var(--risk-low)';
+      }
+    }
 
     // Reset risk badge styles
     el.resultsBadge.className = `risk-badge ${report.riskLevel.toLowerCase()}`;
@@ -450,15 +508,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </svg>
       <span>${report.riskLevel} Risk</span>
     `;
-
-    // Apply color styling to confidence fill bar
-    if (report.riskLevel === 'High') {
-      el.resultsConfidenceFill.style.backgroundColor = 'var(--risk-high)';
-    } else if (report.riskLevel === 'Medium') {
-      el.resultsConfidenceFill.style.backgroundColor = 'var(--risk-medium)';
-    } else {
-      el.resultsConfidenceFill.style.backgroundColor = 'var(--risk-low)';
-    }
 
     // 2. Render SVG gauge
     window.BiosecurityCharts.updateSvgGauge(report.riskScore, report.riskLevel, 'results-gauge-container');
@@ -474,17 +523,39 @@ document.addEventListener('DOMContentLoaded', () => {
         summaryContainer.innerHTML = '<span class="indicator-chip no-indicators">No indicators detected</span>';
       } else {
         report.indicators.forEach(ind => {
-          const formatted = ind.keyword
-            .split(/[- ]+/)
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
-          
           const chip = document.createElement('span');
           chip.className = `indicator-chip ${ind.level.toLowerCase()}`;
-          chip.textContent = formatted;
+          chip.textContent = ind.title || ind.name;
           summaryContainer.appendChild(chip);
         });
       }
+    }
+
+    // Render Why Was This Classified? details
+    if (el.resultsClassificationReasonDetails) {
+      const indsList = report.indicators.length > 0 
+        ? report.indicators.map(ind => ind.title || ind.name).join(', ') 
+        : 'None';
+      const riskClass = report.riskLevel.toLowerCase();
+      
+      el.resultsClassificationReasonDetails.innerHTML = `
+        <div class="classified-row" style="display: flex; flex-direction: row; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
+          <strong style="color: var(--text-primary); width: 180px; flex-shrink: 0; font-weight: 600;">Risk Level:</strong>
+          <span class="risk-badge ${riskClass}" style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: var(--radius-sm); font-weight: 600; text-transform: uppercase;">${report.riskLevel} Risk</span>
+        </div>
+        <div class="classified-row" style="display: flex; flex-direction: row; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
+          <strong style="color: var(--text-primary); width: 180px; flex-shrink: 0; font-weight: 600;">Detected Indicators:</strong>
+          <span style="color: var(--text-secondary);">${indsList}</span>
+        </div>
+        <div class="classified-row" style="display: flex; flex-direction: row; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
+          <strong style="color: var(--text-primary); width: 180px; flex-shrink: 0; font-weight: 600;">Containment Level:</strong>
+          <span style="color: var(--primary); font-weight: 700; background: var(--primary-transparent); padding: 0.1rem 0.4rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">${report.bslLevel}</span>
+        </div>
+        <div class="classified-row" style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.25rem; font-size: 0.9rem; border-top: 1px solid var(--border-color); padding-top: 0.75rem; margin-top: 0.25rem;">
+          <strong style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.25rem;">Decision Rationale:</strong>
+          <p style="color: var(--text-primary); line-height: 1.55; margin: 0; font-size: 0.9rem;">${report.classificationReason || 'The analysis did not produce a classification rationale statement.'}</p>
+        </div>
+      `;
     }
 
     // 4. Render Detected Risk Indicators panel
@@ -509,11 +580,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const cardHTML = `
           <div class="indicator-card ${borderClass}" id="indicator-card-${indicator.id}">
             <div class="indicator-header">
-              <span class="indicator-name">${indicator.name}</span>
+              <span class="indicator-name" style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary);">${indicator.title || indicator.name}</span>
               <span class="risk-badge ${badgeClass}">${indicator.level}</span>
             </div>
-            <div class="indicator-description">${indicator.explanation}</div>
-            <div class="indicator-footer">
+            <div class="indicator-details" style="display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.5rem; margin-bottom: 0.75rem; font-size: 0.85rem; line-height: 1.45;">
+              <div class="indicator-detail-row">
+                <strong style="color: var(--text-primary); font-weight: 600;">Meaning:</strong><br>
+                <span style="color: var(--text-secondary);">${indicator.meaning}</span>
+              </div>
+              <div class="indicator-detail-row">
+                <strong style="color: var(--text-primary); font-weight: 600;">Why Flagged:</strong><br>
+                <span style="color: var(--text-secondary);">${indicator.whyFlagged}</span>
+              </div>
+              <div class="indicator-detail-row">
+                <strong style="color: var(--text-primary); font-weight: 600;">Severity:</strong> 
+                <span class="severity-badge ${indicator.severity ? indicator.severity.toLowerCase() : indicator.level.toLowerCase()}" style="font-weight: 600; text-transform: uppercase;">${indicator.severity || indicator.level}</span>
+              </div>
+            </div>
+            <div class="indicator-footer" style="margin-top: 0.75rem; padding-top: 0.5rem; border-top: 1px solid var(--border-color);">
               <div class="indicator-meta">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
                 <span>Category: ${indicator.category}</span>

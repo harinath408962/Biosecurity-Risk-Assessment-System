@@ -8,87 +8,213 @@ const PORT = process.env.PORT || 3000;
 const rules = [
   {
     keyword: "Bacillus anthracis",
-    name: "Select Agent Identified (B. anthracis)",
+    name: "Bacillus anthracis",
+    title: "Bacillus anthracis",
     category: "Pathogen Identification",
     level: "High",
-    explanation: "Bacillus anthracis is a Tier 1 Select Agent with high lethality and history of weaponization. Research involving genetic modification of this agent is subject to strict DURC (Dual-Use Research of Concern) oversight."
+    severity: "High",
+    meaning: "A Tier 1 select biological agent (bacteria) that causes anthrax.",
+    whyFlagged: "It has high lethality, extreme environmental persistence, and a historical association with biological weapons."
   },
   {
     keyword: "anthrax",
-    name: "Select Agent Mention (Anthrax)",
+    name: "Anthrax",
+    title: "Anthrax",
     category: "Pathogen Identification",
     level: "High",
-    explanation: "Mentions of anthrax, particularly in association with genetic manipulation or dissemination enhancement, flag significant biosecurity concerns."
+    severity: "High",
+    meaning: "The serious bacterial disease caused by Bacillus anthracis.",
+    whyFlagged: "Any discussion of anthrax research flags significant biosecurity oversight requirements due to its history of weaponization."
   },
   {
     keyword: "Ebola",
-    name: "High-Consequence Pathogen (Ebola)",
+    name: "Ebola",
+    title: "Ebola",
     category: "Pathogen Identification",
     level: "High",
-    explanation: "Ebola virus is a high-consequence pathogen causing severe hemorrhagic fever. Any manipulation of its transmission vectors or viral stability requires maximum BSL-4 containment."
+    severity: "High",
+    meaning: "A high-consequence virus that causes severe hemorrhagic fever in humans.",
+    whyFlagged: "Ebola is highly lethal with limited treatment options, requiring maximum Biosafety Level 4 (BSL-4) containment."
   },
   {
     keyword: "aerosolization",
-    name: "Dissemination Enhancement (Aerosolization)",
+    name: "Aerosolization",
+    title: "Aerosolization",
     category: "Dissemination & Delivery",
     level: "High",
-    explanation: "Research specifically aiming to optimize the aerosolization efficiency of bacterial spores or viral particles facilitates inhalation delivery, a primary pathway for biological weapons."
+    severity: "High",
+    meaning: "The physical process of suspending biological particles or liquids in the air.",
+    whyFlagged: "Optimizing aerosolization enables inhalation delivery, which is the primary pathway of concern for biological weapons."
   },
   {
     keyword: "vaccine-induced immunity",
-    name: "Immune Evasion / Resistance",
+    name: "Vaccine-Induced Immunity Evasion",
+    title: "Vaccine-Induced Immunity Evasion",
     category: "Host-Pathogen Interactions",
     level: "High",
-    explanation: "Bypassing vaccine-induced immunity or host defenses represents a dangerous modification that renders standard medical countermeasures (like vaccinations) ineffective."
+    severity: "High",
+    meaning: "Modifying a pathogen to bypass the protection provided by existing vaccines.",
+    whyFlagged: "Evasion of vaccines renders medical countermeasures useless, which can trigger uncontrollable outbreaks."
   },
   {
     keyword: "lethality",
-    name: "Virulence / Lethality Enhancement",
+    name: "Lethality",
+    title: "Lethality",
     category: "Functional Modification",
     level: "High",
-    explanation: "Enhancing the lethality, virulence, or clinical severity of a pathogen directly increases the public health risk and potential damage if released."
+    severity: "High",
+    meaning: "The capability of a pathogen or biological toxin to cause death.",
+    whyFlagged: "Enhancing lethality directly increases the severity of public health consequences if the agent is released."
   },
   {
     keyword: "spore wall modifications",
-    name: "Dissemination Optimization",
+    name: "Spore Wall Modifications",
+    title: "Spore Wall Modifications",
     category: "Dissemination & Delivery",
     level: "High",
-    explanation: "Altering the outer spore coats to prevent static aggregation increases the suspension time and stability of airborne spores, optimizing inhalational risk."
+    severity: "High",
+    meaning: "Altering the outer shell of bacterial spores to prevent them from clumping together.",
+    whyFlagged: "This physical modification keeps spores suspended in the air longer, increasing the inhalation risk."
   },
   {
     keyword: "exosporium",
-    name: "Spore Surface Modification",
+    name: "Exosporium",
+    title: "Exosporium",
     category: "Functional Modification",
     level: "High",
-    explanation: "Modifying the exosporium layers of spore-forming pathogens can alter physical characteristics like hydrophobicity and binding properties, affecting environmental persistence."
+    severity: "High",
+    meaning: "The balloon-like outermost layer of certain bacterial spores.",
+    whyFlagged: "Altering the exosporium changes how spores disperse and persist in the environment, which can optimize delivery."
   },
   {
     keyword: "H5N1",
-    name: "Potential Pandemic Pathogen (H5N1)",
+    name: "H5N1",
+    title: "H5N1",
     category: "Pathogen Identification",
     level: "Medium",
-    explanation: "H5N1 Highly Pathogenic Avian Influenza has a high mortality rate in humans. Research regarding its aerosol transmission potential is highly scrutinized due to pandemic risks."
+    severity: "Medium",
+    meaning: "A highly pathogenic strain of avian influenza (bird flu) virus.",
+    whyFlagged: "H5N1 has a high mortality rate in birds and humans; research on its transmission carries pandemic risk."
   },
   {
     keyword: "aerosol transmission",
-    name: "Aerosol Transmission Studies",
+    name: "Aerosol Transmission",
+    title: "Aerosol Transmission",
     category: "Transmission Potential",
     level: "Medium",
-    explanation: "Investigating aerosol transmission parameters of respiratory pathogens is critical for public health, but carries dual-use risks if transmission efficiency is accidentally or deliberately increased."
+    severity: "Medium",
+    meaning: "The spread of biological agents through fine airborne droplets.",
+    whyFlagged: "Investigating airborne pathways is vital for public health but carries dual-use risk if transmission efficiency is enhanced."
   },
   {
     keyword: "exposure chamber",
-    name: "High-Containment Experimental Systems",
+    name: "Exposure Chamber",
+    title: "Exposure Chamber",
     category: "Experimental Apparatus",
     level: "Medium",
-    explanation: "Use of specialized aerosol exposure chambers indicating research into inhalation infectivity parameters. Requires strict safety controls and biosafety verification."
+    severity: "Medium",
+    meaning: "A specialized laboratory enclosure used to expose biological targets to aerosols.",
+    whyFlagged: "This equipment indicates active research into inhalation infectivity and airborne transmission parameters."
   },
   {
     keyword: "dual-use",
-    name: "Explicit Dual-Use Mention",
+    name: "Dual Use",
+    title: "Dual Use",
     category: "Policy Compliance",
     level: "Medium",
-    explanation: "The text explicitly mentions dual-use implications, indicating that the researchers are aware of biosecurity oversight requirements (DURC)."
+    severity: "Medium",
+    meaning: "Technologies or biological materials with both beneficial civilian and harmful military applications.",
+    whyFlagged: "Explicit mention highlights awareness of regulatory oversight and Institutional Biosafety Committee review."
+  },
+  {
+    keyword: "pathogen",
+    name: "Pathogen",
+    title: "Pathogen",
+    category: "Pathogen Identification",
+    level: "Medium",
+    severity: "Medium",
+    meaning: "Any microorganism (like a virus, bacterium, or fungus) that causes disease.",
+    whyFlagged: "Identifying pathogenic research establishes the baseline biosafety precautions required for the laboratory."
+  },
+  {
+    keyword: "transmission",
+    name: "Transmission",
+    title: "Transmission",
+    category: "Transmission Potential",
+    level: "Medium",
+    severity: "Medium",
+    meaning: "The movement of an infectious agent from one host to another.",
+    whyFlagged: "Studies analyzing transmission dynamics require monitoring to prevent the creation of highly contagious strains."
+  },
+  {
+    keyword: "crispr",
+    name: "CRISPR",
+    title: "CRISPR",
+    category: "Genetic Engineering",
+    level: "Medium",
+    severity: "Medium",
+    meaning: "A molecular technology used to make precise, targeted edits to DNA sequences.",
+    whyFlagged: "CRISPR is a widely used tool with many legitimate research and medical applications. It only becomes a biosecurity concern when combined with pathogen modification, virulence enhancement, transmission enhancement, or other dual-use indicators."
+  },
+  {
+    keyword: "gene editing",
+    name: "Gene Editing",
+    title: "Gene Editing",
+    category: "Genetic Engineering",
+    level: "Medium",
+    severity: "Medium",
+    meaning: "A set of technologies that enable scientists to change an organism's genetic material.",
+    whyFlagged: "These methods have broad positive medical applications, but are flagged because they can alter biological agent characteristics. They present biosecurity risks only when modifying pathogens to enhance virulence or transmission."
+  },
+  {
+    keyword: "genetic engineering",
+    name: "Genetic Engineering",
+    title: "Genetic Engineering",
+    category: "Genetic Engineering",
+    level: "Medium",
+    severity: "Medium",
+    meaning: "The direct modification of an organism's genes using biotechnology.",
+    whyFlagged: "Widely used in agriculture and medicine, genetic engineering is flagged because it can alter biological agents. It becomes a biosecurity concern only when combined with pathogen modification, virulence enhancement, or transmission enhancement."
+  },
+  {
+    keyword: "gain of function",
+    name: "Gain of Function",
+    title: "Gain of Function",
+    category: "Functional Modification",
+    level: "High",
+    severity: "High",
+    meaning: "Research that enhances a pathogen's transmissibility, lethality, host range, or immune evasion.",
+    whyFlagged: "Enhancing pathogenic traits carries significant biosafety risk and requires rigorous institutional and federal oversight."
+  },
+  {
+    keyword: "toxin",
+    name: "Toxin",
+    title: "Toxin",
+    category: "Pathogen Identification",
+    level: "High",
+    severity: "High",
+    meaning: "A poisonous substance produced by a living organism (e.g., ricin, botulinum).",
+    whyFlagged: "Biological toxins are extremely potent chemical/biological threats, and their modification or synthesis is heavily regulated."
+  },
+  {
+    keyword: "biosafety",
+    name: "Biosafety",
+    title: "Biosafety",
+    category: "Policy Compliance",
+    level: "Medium",
+    severity: "Medium",
+    meaning: "The collection of containment principles and safety practices used when handling infectious materials.",
+    whyFlagged: "Ensuring proper biosafety containment standards prevents accidental release or exposure to laboratory personnel."
+  },
+  {
+    keyword: "virulence",
+    name: "Virulence",
+    title: "Virulence",
+    category: "Functional Modification",
+    level: "High",
+    severity: "High",
+    meaning: "Ability of a pathogen to cause disease severity.",
+    whyFlagged: "Research discussing increased virulence may indicate enhancement of disease-causing capability."
   }
 ];
 
@@ -171,6 +297,13 @@ const server = http.createServer((req, res) => {
 
   const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   const pathname = parsedUrl.pathname;
+
+  if (pathname === '/' && req.method === 'HEAD') {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end();
+    return;
+  }
+
 
   // POST Route for Biosecurity Analysis
   if (pathname === '/api/analyze' && req.method === 'POST') {

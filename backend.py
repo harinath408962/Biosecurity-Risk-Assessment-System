@@ -145,7 +145,8 @@ def analyze_research_text(text):
     biosecurity_keywords = {
         "bacillus anthracis", "anthrax", "ebola", "aerosolization", 
         "vaccine-induced immunity", "lethality", "spore wall modifications", "exosporium", "virulence",
-        "h5n1", "aerosol transmission", "exposure chamber", "dual-use"
+        "h5n1", "aerosol transmission", "exposure chamber", "dual-use",
+        "pathogen", "transmission", "crispr", "gene editing", "genetic engineering", "gain of function", "toxin", "biosafety"
     }
     
     final_indicators = []
@@ -158,26 +159,8 @@ def analyze_research_text(text):
                 original_kw = "Ebola"
             elif kw == "h5n1":
                 original_kw = "H5N1"
-            elif kw == "vaccine-induced immunity":
-                original_kw = "vaccine-induced immunity"
-            elif kw == "spore wall modifications":
-                original_kw = "spore wall modifications"
-            elif kw == "aerosol transmission":
-                original_kw = "aerosol transmission"
-            elif kw == "exposure chamber":
-                original_kw = "exposure chamber"
-            elif kw == "dual-use":
-                original_kw = "dual-use"
-            elif kw == "aerosolization":
-                original_kw = "aerosolization"
-            elif kw == "lethality":
-                original_kw = "lethality"
-            elif kw == "exosporium":
-                original_kw = "exosporium"
-            elif kw == "anthrax":
-                original_kw = "anthrax"
-            elif kw == "virulence":
-                original_kw = "virulence"
+            elif kw == "crispr":
+                original_kw = "CRISPR"
             final_indicators.append(original_kw)
 
     return {
@@ -194,13 +177,37 @@ class MLAPIRequestHandler(BaseHTTPRequestHandler):
     """
     def end_headers(self):
         self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
+        self.send_header('Access-Control-Allow-Methods', 'POST, GET, HEAD, OPTIONS')
         self.send_header('Access-Control-Allow-Headers', 'Content-Type')
         super().end_headers()
 
     def do_OPTIONS(self):
         self.send_response(200)
         self.end_headers()
+
+    def do_GET(self):
+        if self.path == '/':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+            response_body = {
+                "status": "ok",
+                "service": "Biosecurity Risk Assessment API",
+                "version": "1.0"
+            }
+            self.wfile.write(json.dumps(response_body).encode('utf-8'))
+        else:
+            self.send_response(404)
+            self.end_headers()
+
+    def do_HEAD(self):
+        if self.path == '/':
+            self.send_response(200)
+            self.send_header('Content-Type', 'application/json')
+            self.end_headers()
+        else:
+            self.send_response(404)
+            self.end_headers()
 
     def do_POST(self):
         if self.path == '/api/analyze':
@@ -233,6 +240,7 @@ class MLAPIRequestHandler(BaseHTTPRequestHandler):
         else:
             self.send_response(404)
             self.end_headers()
+
 
 
 def serve(port=8000):
