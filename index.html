@@ -261,6 +261,12 @@
           <h1 class="academic-title" style="font-size: 1.6rem;">Biosecurity Risk Assessment Report</h1>
         </div>
         <div style="display: flex; gap: 0.75rem;">
+          <button class="btn btn-secondary" id="presentation-btn" style="background-color: var(--primary-transparent); border-color: var(--primary); color: var(--primary);">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            <span>Presentation Summary</span>
+          </button>
           <button class="btn btn-secondary" id="export-json-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -282,12 +288,17 @@
         </div>
       </div>
 
+      <!-- Prominent Final Assessment Summary Box -->
+      <div class="glass-card" id="results-final-assessment-box" style="margin-bottom: 1.5rem; border-left: 6px solid var(--primary); padding: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem;">
+        <!-- Dynamically populated in app.js -->
+      </div>
+
       <!-- Core metrics summaries (4 cards) -->
       <div class="results-grid">
         
         <!-- Score Gauge -->
         <div class="glass-card metric-card">
-          <span class="metric-label">Biosecurity Risk Score</span>
+          <span class="metric-label">Biosecurity Severity Score</span>
           <div id="results-gauge-container">
             <!-- Programmatic SVG Gauge renders here -->
           </div>
@@ -315,7 +326,12 @@
           <div class="bsl-graphic" id="results-bsl-text" style="font-size: 2rem; font-weight: 800; padding: 0.25rem 1rem; border-radius: 8px;">BSL-1</div>
           <div class="bsl-name" id="results-bsl-name" style="font-weight: 600; font-size: 0.85rem; margin-top: 0.5rem; color: var(--text-primary);">Low Containment Laboratory</div>
           <div class="bsl-desc" id="results-bsl-desc" style="font-size: 0.72rem; color: var(--text-secondary); margin-top: 0.25rem; line-height: 1.35; max-width: 250px;">Suitable for low-risk biological materials. Standard laboratory practices are sufficient.</div>
-          <div class="bsl-reason" id="results-bsl-reason" style="font-size: 0.72rem; font-style: italic; color: var(--text-muted); margin-top: 0.5rem; border-top: 1px solid var(--border-color); padding-top: 0.4rem; width: 100%;">Reason: No indicators detected.</div>
+          <div class="bsl-drivers" id="results-bsl-drivers" style="font-size: 0.72rem; text-align: left; color: var(--text-secondary); margin-top: 0.5rem; border-top: 1px solid var(--border-color); padding-top: 0.4rem; width: 100%;">
+            <strong style="color: var(--text-primary); display: block; margin-bottom: 0.2rem;">Primary Risk Drivers:</strong>
+            <ul id="results-bsl-drivers-list" style="margin: 0; padding-left: 1rem; list-style-type: disc;">
+              <!-- Dynamic bullets -->
+            </ul>
+          </div>
         </div>
 
         <!-- Confidence indicators -->
@@ -533,7 +549,7 @@
                   <th scope="col">Evaluation Date</th>
                   <th scope="col">Document Target</th>
                   <th scope="col">Risk Severity</th>
-                  <th scope="col">Risk Score (%)</th>
+                  <th scope="col">Severity Score (%)</th>
                   <th scope="col">Report Analysis</th>
                 </tr>
               </thead>
@@ -569,6 +585,11 @@
   <div id="print-report-container">
     <!-- Page 1 -->
     <div class="print-page page-1">
+      <!-- Final Assessment Box at the very top of Page 1 -->
+      <div id="print-final-assessment-box" class="print-final-assessment">
+        <!-- Dynamically populated in app.js -->
+      </div>
+
       <div class="print-header">
         <h1 class="print-report-title">BIOSECURITY RISK ASSESSMENT REPORT</h1>
         <div class="print-meta">
@@ -584,7 +605,7 @@
           <strong>Risk Level:</strong> <span id="print-risk-level">-</span>
         </div>
         <div class="print-metric-box">
-          <strong>Risk Score:</strong> <span id="print-risk-score">-</span>
+          <strong>Biosecurity Severity Score:</strong> <span id="print-risk-score">-</span>
         </div>
         <div class="print-metric-box">
           <strong>Model Confidence:</strong> <span id="print-confidence">-</span>
@@ -603,7 +624,19 @@
         <h2>Containment Recommendation</h2>
         <p><strong>Recommended Level:</strong> <span id="print-bsl-level">-</span> - <span id="print-bsl-name">-</span></p>
         <p><strong>Description:</strong> <span id="print-bsl-desc">-</span></p>
-        <p><strong>Containment Reason:</strong> <span id="print-bsl-reason">-</span></p>
+        <div class="print-drivers" style="margin-top: 0.5rem;">
+          <strong>Primary Risk Drivers:</strong>
+          <ul id="print-bsl-drivers-list" style="margin: 0.25rem 0 0 0; padding-left: 1.2rem; list-style-type: disc;">
+            <!-- Dynamic bullets -->
+          </ul>
+        </div>
+      </div>
+
+      <!-- Page 1 Footer -->
+      <div class="print-footer">
+        <span>Biosecurity Risk Assessment System</span>
+        <span>Generated on: <span class="print-footer-date">-</span></span>
+        <span>Page 1 of 3</span>
       </div>
     </div>
     
@@ -611,17 +644,89 @@
     <div class="print-page page-2">
       <h1 class="print-report-title">Detected Indicators</h1>
       <hr class="print-divider">
-      <div id="print-indicators-list">
+      <div id="print-indicators-list" style="margin-bottom: 2rem;">
         <!-- Dynamically populated indicator details -->
+      </div>
+
+      <!-- Page 2 Footer -->
+      <div class="print-footer">
+        <span>Biosecurity Risk Assessment System</span>
+        <span>Generated on: <span class="print-footer-date">-</span></span>
+        <span>Page 2 of 3</span>
       </div>
     </div>
     
     <!-- Page 3 -->
-    <div class="print-page page-3">
-      <h1 class="print-report-title">Analyzed Abstract / Research Text</h1>
-      <hr class="print-divider">
-      <div id="print-abstract-text" style="white-space: pre-line; text-align: justify; line-height: 1.6; font-family: serif; font-size: 1.1rem; color: #000000;">
-        <!-- Full abstract text -->
+    <div class="print-page page-3" style="display: flex; flex-direction: column; justify-content: space-between; height: 100%;">
+      <div>
+        <h1 class="print-report-title">Analyzed Abstract / Research Text</h1>
+        <hr class="print-divider">
+        <div id="print-abstract-text" style="white-space: pre-line; text-align: justify; line-height: 1.6; font-family: serif; font-size: 1.1rem; color: #000000; margin-bottom: 2rem;">
+          <!-- Full abstract text -->
+        </div>
+      </div>
+
+      <!-- Professional Disclaimer -->
+      <div class="print-disclaimer" style="margin-top: auto; padding-top: 1rem; border-top: 1.5px solid #000000; font-size: 0.9rem; line-height: 1.5; color: #333333; page-break-inside: avoid;">
+        <strong style="color: #000000; font-weight: 700; display: block; margin-bottom: 0.25rem; text-transform: uppercase; letter-spacing: 0.05em;">Disclaimer</strong>
+        <p style="margin: 0;">This system provides AI-assisted decision support for preliminary biosecurity assessment. The generated classification, containment recommendations, and risk interpretations should not replace review by qualified biosafety, biosecurity, regulatory, or subject-matter experts.</p>
+      </div>
+
+      <!-- Page 3 Footer -->
+      <div class="print-footer">
+        <span>Biosecurity Risk Assessment System</span>
+        <span>Generated on: <span class="print-footer-date">-</span></span>
+        <span>Page 3 of 3</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Presentation Mode Modal Overlay -->
+  <div class="presentation-modal-overlay hidden" id="presentation-modal">
+    <div class="presentation-modal-card glass-card">
+      <div class="presentation-modal-header">
+        <h2 class="presentation-modal-title">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+            <line x1="12" y1="18" x2="12.01" y2="18"/>
+          </svg>
+          <span>Executive Presentation Summary</span>
+        </h2>
+        <button class="close-presentation-btn" id="close-presentation-btn" aria-label="Close Presentation Summary">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      
+      <div class="presentation-modal-content" style="display: flex; flex-direction: column; gap: 1.25rem;">
+        <div class="pres-metric-grid">
+          <div class="pres-metric-box">
+            <span class="pres-label">Risk Level</span>
+            <span class="risk-badge" id="pres-risk-level" style="font-size: 0.95rem; padding: 0.25rem 0.6rem; border-radius: 4px; font-weight: 700;">-</span>
+          </div>
+          <div class="pres-metric-box">
+            <span class="pres-label">Recommended Containment</span>
+            <span class="pres-val" id="pres-bsl-level" style="font-size: 1.4rem; font-weight: 800; color: var(--primary);">-</span>
+          </div>
+          <div class="pres-metric-box">
+            <span class="pres-label">Review Required</span>
+            <span class="pres-val" id="pres-review-required" style="font-size: 1.2rem; font-weight: 700; text-transform: uppercase;">-</span>
+          </div>
+        </div>
+        
+        <div class="pres-section">
+          <h3>Primary Risk Drivers</h3>
+          <ul id="pres-drivers-list" style="margin: 0.25rem 0 0 0; padding-left: 1.2rem; list-style-type: disc; color: var(--text-secondary);">
+            <!-- Populated dynamically -->
+          </ul>
+        </div>
+        
+        <div class="pres-section">
+          <h3>Decision Rationale</h3>
+          <p id="pres-rationale-text" style="font-size: 0.95rem; line-height: 1.5; color: var(--text-secondary); margin: 0;">-</p>
+        </div>
       </div>
     </div>
   </div>

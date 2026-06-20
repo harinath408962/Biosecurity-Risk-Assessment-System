@@ -324,15 +324,16 @@ class BiosecurityAPI {
       // Generate dynamic client-side explanation summary based on riskLevel, BSL, and indicators
       const explanationSummary = this._generateExplanationSummary(riskLevel, processedIndicators);
       const classificationReason = this._generateClassificationReason(riskLevel, bsl, processedIndicators);
+      const calculatedSeverityScore = this._calculateRiskScore(riskLevel, processedIndicators, predictionScore);
 
       return {
         timestamp: new Date().toISOString(),
         textInput: text,
         highlightedText: highlightedText,
         riskLevel: riskLevel,
-        riskScore: predictionScore,
+        riskScore: calculatedSeverityScore,
         bslLevel: bsl,
-        confidenceScore: predictionScore, // Map prediction score to confidence score as well
+        confidenceScore: predictionScore, // Map raw prediction score to confidence score
         explanation: explanationSummary,
         classificationReason: classificationReason,
         indicators: processedIndicators,
@@ -359,6 +360,22 @@ class BiosecurityAPI {
         }, 80);
       });
     });
+  }
+
+  _calculateRiskScore(riskLevel, indicators, confidenceScore) {
+    const highInds = indicators.filter(i => i.level === "High" || i.severity === "High").length;
+    const medInds = indicators.filter(i => i.level === "Medium" || i.severity === "Medium").length;
+    
+    if (riskLevel === "High") {
+      return Math.min(71 + (highInds * 6) + (medInds * 2), 99);
+    } else if (riskLevel === "Medium") {
+      return Math.min(31 + (medInds * 6) + (highInds * 10), 69);
+    } else {
+      if (indicators.length === 0) {
+        return Math.max(5, Math.min(20, Math.round(confidenceScore * 0.15)));
+      }
+      return Math.min(30, Math.max(5, (medInds * 4) + (highInds * 8)));
+    }
   }
 
   _generateExplanationSummary(riskLevel, indicators) {
@@ -551,13 +568,14 @@ These indicators are commonly associated with dual-use biological research requi
 
     explanationSummary = this._generateExplanationSummary(riskLevel, detectedIndicators);
     const classificationReason = this._generateClassificationReason(riskLevel, bslLevel, detectedIndicators);
+    const calculatedSeverityScore = this._calculateRiskScore(riskLevel, detectedIndicators, confidenceScore);
 
     return {
       timestamp: new Date().toISOString(),
       textInput: text,
       highlightedText: highlightedText,
       riskLevel: riskLevel,
-      riskScore: riskScore,
+      riskScore: calculatedSeverityScore,
       bslLevel: bslLevel,
       confidenceScore: confidenceScore,
       explanation: explanationSummary,

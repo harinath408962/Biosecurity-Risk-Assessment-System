@@ -474,12 +474,20 @@ a:hover {
     padding: 0 !important;
   }
   
+  /* Reset overflow and heights to print full content without scrollbars/clipping */
+  html, body, .app-container, .manuscript-body, .indicators-list, #print-report-container, .print-page {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+
   .print-page {
     page-break-before: always;
     page-break-inside: avoid;
     clear: both;
-    padding: 2.5rem 0;
-    min-height: 100%;
+    position: relative;
+    box-sizing: border-box;
+    padding: 2.5rem 0 4.5rem 0;
+    height: 275mm; /* standard A4 print height */
     color: #000000 !important;
     background: #ffffff !important;
   }
@@ -488,9 +496,15 @@ a:hover {
     page-break-before: avoid;
   }
   
+  .print-page.page-3 {
+    page-break-inside: auto; /* let abstract overflow onto next pages */
+    height: auto;
+    min-height: 275mm;
+  }
+
   .print-header {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
   
   .print-report-title {
@@ -498,7 +512,7 @@ a:hover {
     font-weight: 800;
     color: #000000 !important;
     letter-spacing: 0.05em;
-    margin-bottom: 1rem;
+    margin-bottom: 0.75rem;
     font-family: Georgia, serif;
     text-transform: uppercase;
   }
@@ -506,39 +520,39 @@ a:hover {
   .print-meta {
     font-size: 1.1rem;
     line-height: 1.6;
-    margin-top: 1rem;
+    margin-top: 0.75rem;
     text-align: left;
   }
   
   .print-divider {
     border: none;
     border-top: 2.5px solid #000000;
-    margin: 1.5rem 0;
+    margin: 1.25rem 0;
   }
   
   .print-metrics-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
   
   .print-metric-box {
     border: 1px solid #000000;
-    padding: 1rem;
+    padding: 0.85rem;
     border-radius: 4px;
     font-size: 1.1rem;
     background: #fdfdfd;
   }
   
   .print-section {
-    margin-bottom: 2.2rem;
+    margin-bottom: 1.75rem;
   }
   
   .print-section h2 {
     font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.6rem;
     border-bottom: 1px solid #000000;
     padding-bottom: 0.25rem;
     color: #000000 !important;
@@ -553,7 +567,7 @@ a:hover {
     margin-bottom: 1.8rem;
     padding-bottom: 1rem;
     border-bottom: 1.5px dashed #000000;
-    page-break-inside: avoid;
+    page-break-inside: avoid !important;
   }
   
   .print-indicator-item h3 {
@@ -568,6 +582,33 @@ a:hover {
     font-size: 1.05rem;
     margin: 0.35rem 0;
     line-height: 1.5;
+  }
+
+  /* Academic print-only footers */
+  .print-footer {
+    display: flex !important;
+    justify-content: space-between;
+    align-items: center;
+    position: absolute;
+    bottom: 10px;
+    left: 0;
+    right: 0;
+    border-top: 1.5px solid #000000;
+    padding-top: 0.5rem;
+    font-size: 0.85rem;
+    font-family: Arial, sans-serif;
+    color: #333333 !important;
+    page-break-inside: avoid;
+  }
+
+  /* Print final assessment box styling */
+  .print-final-assessment {
+    border: 2.5px solid #000000;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+    background: #fdfdfd;
+    border-radius: 4px;
+    page-break-inside: avoid;
   }
 }
 

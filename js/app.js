@@ -57,6 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
     exportJsonBtn: document.getElementById('export-json-btn'),
     exportPdfBtn: document.getElementById('export-pdf-btn'),
     backToInputBtn: document.getElementById('back-to-input-btn'),
+    presentationBtn: document.getElementById('presentation-btn'),
+    closePresentationBtn: document.getElementById('close-presentation-btn'),
+    presentationModal: document.getElementById('presentation-modal'),
 
     // Dashboard Page Elements
     statTotal: document.getElementById('stat-total-analyses'),
@@ -68,6 +71,69 @@ document.addEventListener('DOMContentLoaded', () => {
     historyTableBody: document.getElementById('history-table-body'),
     clearHistoryBtn: document.getElementById('clear-history-btn')
   };
+
+  // --- HELPERS FOR FINAL PASS ---
+  function generateFinalReason(report) {
+    if (!report.indicators || report.indicators.length === 0) {
+      return "No biosecurity risk indicators or dual-use concerns were identified in the analyzed text.";
+    }
+    const categories = [];
+    const lowercaseInds = report.indicators.map(ind => (ind.keyword || '').toLowerCase());
+    if (lowercaseInds.some(ind => ["virulence", "lethality", "gain of function", "toxin", "vaccine-induced immunity", "spore wall modifications"].includes(ind))) {
+      categories.push("pathogen enhancement");
+    }
+    if (lowercaseInds.some(ind => ["aerosol transmission", "aerosolization", "exposure chamber", "transmission"].includes(ind))) {
+      categories.push("aerosol transmission");
+    }
+    if (lowercaseInds.some(ind => ["bacillus anthracis", "anthrax", "ebola", "h5n1"].includes(ind))) {
+      categories.push("high-consequence pathogen");
+    }
+    if (lowercaseInds.some(ind => ["crispr", "gene editing", "genetic engineering"].includes(ind))) {
+      categories.push("genetic engineering");
+    }
+    
+    if (categories.length === 0) {
+      return `The document contains biosecurity indicators (${report.indicators.map(i => i.title || i.name).slice(0, 3).join(", ")}) requiring baseline Biosafety Level compliance.`;
+    }
+    
+    let categoryString = "";
+    if (categories.length === 1) {
+      categoryString = categories[0];
+    } else if (categories.length === 2) {
+      categoryString = `${categories[0]} and ${categories[1]}`;
+    } else {
+      categoryString = `${categories.slice(0, -1).join(", ")}, and ${categories[categories.length - 1]}`;
+    }
+    
+    return `The document contains ${categoryString} indicators which increase dual-use biosecurity concerns.`;
+  }
+
+  function populateDriversList(listEl, indicators) {
+    if (!listEl) return;
+    listEl.innerHTML = '';
+    if (!indicators || indicators.length === 0) {
+      const li = document.createElement('li');
+      li.textContent = 'None detected';
+      listEl.appendChild(li);
+      return;
+    }
+    
+    const sorted = [...indicators].sort((a, b) => {
+      const valA = (a.level === 'High' || a.severity === 'High') ? 2 : 1;
+      const valB = (b.level === 'High' || b.severity === 'High') ? 2 : 1;
+      return valB - valA;
+    });
+    
+    const top = sorted.slice(0, 5);
+    top.forEach(ind => {
+      const li = document.createElement('li');
+      li.textContent = ind.title || ind.name;
+      if (ind.level === 'High' || ind.severity === 'High') {
+        li.style.fontWeight = '600';
+      }
+      listEl.appendChild(li);
+    });
+  }
 
   // --- INITIALIZATION ---
   initTheme();
@@ -286,6 +352,30 @@ document.addEventListener('DOMContentLoaded', () => {
       el.backToInputBtn.addEventListener('click', () => navigateTo('home'));
     }
 
+    if (el.presentationBtn) {
+      el.presentationBtn.addEventListener('click', () => {
+        if (state.currentReport && el.presentationModal) {
+          el.presentationModal.classList.remove('hidden');
+        }
+      });
+    }
+
+    if (el.closePresentationBtn) {
+      el.closePresentationBtn.addEventListener('click', () => {
+        if (el.presentationModal) {
+          el.presentationModal.classList.add('hidden');
+        }
+      });
+    }
+
+    if (el.presentationModal) {
+      el.presentationModal.addEventListener('click', (e) => {
+        if (e.target === el.presentationModal) {
+          el.presentationModal.classList.add('hidden');
+        }
+      });
+    }
+
     // Dashboard Search & Filters
     if (el.dashboardSearch) {
       el.dashboardSearch.addEventListener('input', filterHistoryTable);
@@ -462,25 +552,52 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el.resultsBslName) el.resultsBslName.textContent = meta.name;
     if (el.resultsBslDesc) el.resultsBslDesc.textContent = meta.desc;
 
-    // Construct BSL Reason
-    let bslReasonText = "Reason: No indicators detected.";
-    if (report.indicators && report.indicators.length > 0) {
-      const activeKeywords = report.indicators.map(ind => {
-        const title = ind.title || ind.name;
-        if (["CRISPR", "Ebola", "H5N1", "Bacillus anthracis"].includes(title)) {
-          return title;
-        }
-        return title.toLowerCase();
-      });
-      if (activeKeywords.length === 1) {
-        bslReasonText = `Reason: ${activeKeywords[0]} indicator was detected.`;
-      } else if (activeKeywords.length === 2) {
-        bslReasonText = `Reason: ${activeKeywords[0]} and ${activeKeywords[1]} indicators were detected.`;
-      } else {
-        bslReasonText = `Reason: ${activeKeywords.slice(0, -1).join(', ')}, and ${activeKeywords[activeKeywords.length - 1]} indicators were detected.`;
-      }
+    // Populate Primary Risk Drivers list in the BSL Containment Card
+    const driversListUI = document.getElementById('results-bsl-drivers-list');
+    populateDriversList(driversListUI, report.indicators);
+
+    // Populate Final Assessment Box
+    const finalAssessmentUI = document.getElementById('results-final-assessment-box');
+    const reviewRequired = (report.riskLevel === 'High' || report.riskLevel === 'Medium') ? 'Required' : 'Not Required';
+    const reviewColor = reviewRequired === 'Required' ? 'var(--risk-high)' : 'var(--risk-low)';
+    const riskClass = report.riskLevel.toLowerCase();
+    const finalReasonText = generateFinalReason(report);
+
+    if (finalAssessmentUI) {
+      finalAssessmentUI.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 0.75rem; margin-bottom: 0.75rem;">
+          <span style="font-size: 1.15rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary);">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+              <polyline points="10 9 9 9 8 9"></polyline>
+            </svg>
+            <span>Final Assessment</span>
+          </span>
+          <span class="risk-badge ${riskClass}" style="font-weight: 700; text-transform: uppercase; font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: var(--radius-sm);">${report.riskLevel} Risk</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 0.75rem;">
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 0.02em;">Risk Severity</span>
+            <span style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary);">${report.riskLevel}</span>
+          </div>
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 0.02em;">Recommended Containment</span>
+            <span style="font-size: 1.15rem; font-weight: 700; color: var(--primary);">${report.bslLevel}</span>
+          </div>
+          <div style="display: flex; flex-direction: column;">
+            <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 0.02em;">Review Required</span>
+            <span style="font-size: 1.15rem; font-weight: 700; color: ${reviewColor};">${reviewRequired}</span>
+          </div>
+        </div>
+        <div style="border-top: 1px solid var(--border-color); padding-top: 0.75rem; display: flex; flex-direction: column; gap: 0.25rem;">
+          <span style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-muted); font-weight: 600; letter-spacing: 0.02em;">Reason</span>
+          <p style="margin: 0; font-size: 1.02rem; line-height: 1.5; color: var(--text-primary); font-weight: 500;">${finalReasonText}</p>
+        </div>
+      `;
     }
-    if (el.resultsBslReason) el.resultsBslReason.textContent = bslReasonText;
 
     if (el.resultsConfidenceText) el.resultsConfidenceText.textContent = `${report.confidenceScore}%`;
     el.resultsExplanation.textContent = report.explanation;
@@ -621,7 +738,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const printBslLevel = document.getElementById('print-bsl-level');
     const printBslName = document.getElementById('print-bsl-name');
     const printBslDesc = document.getElementById('print-bsl-desc');
-    const printBslReason = document.getElementById('print-bsl-reason');
+    const printBslDriversList = document.getElementById('print-bsl-drivers-list');
     const printIndicatorsList = document.getElementById('print-indicators-list');
     const printAbstractText = document.getElementById('print-abstract-text');
 
@@ -635,8 +752,60 @@ document.addEventListener('DOMContentLoaded', () => {
     if (printBslLevel) printBslLevel.textContent = report.bslLevel;
     if (printBslName) printBslName.textContent = meta.name;
     if (printBslDesc) printBslDesc.textContent = meta.desc;
-    if (printBslReason) printBslReason.textContent = bslReasonText;
+
+    // Populate Print Drivers
+    populateDriversList(printBslDriversList, report.indicators);
+
     if (printAbstractText) printAbstractText.textContent = report.textInput;
+
+    // Populate Print Final Assessment summary box
+    const printFinalAssessmentBox = document.getElementById('print-final-assessment-box');
+    if (printFinalAssessmentBox) {
+      printFinalAssessmentBox.innerHTML = `
+        <div style="margin-bottom: 0.75rem; font-size: 1.3rem; font-weight: 800; border-bottom: 2px solid #000000; padding-bottom: 0.5rem; text-transform: uppercase; color: #000000;">
+          FINAL ASSESSMENT
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 0.75rem; font-size: 1.05rem; color: #000000;">
+          <div>
+            <strong>Risk Level:</strong> ${report.riskLevel}
+          </div>
+          <div>
+            <strong>Recommended Containment:</strong> ${report.bslLevel}
+          </div>
+          <div>
+            <strong>Review Required:</strong> ${reviewRequired}
+          </div>
+        </div>
+        <div style="border-top: 1px solid #000000; padding-top: 0.5rem; color: #000000;">
+          <strong>Reason:</strong>
+          <p style="margin: 0.25rem 0 0 0; line-height: 1.5; font-size: 1.05rem;">${finalReasonText}</p>
+        </div>
+      `;
+    }
+
+    // Populate footers dates
+    const footerDates = document.querySelectorAll('.print-footer-date');
+    const dateFormatted = new Date(report.timestamp).toLocaleString();
+    footerDates.forEach(elDate => elDate.textContent = dateFormatted);
+
+    // Populate Presentation Modal
+    const presRiskLevel = document.getElementById('pres-risk-level');
+    const presBslLevel = document.getElementById('pres-bsl-level');
+    const presReviewRequired = document.getElementById('pres-review-required');
+    const presDriversList = document.getElementById('pres-drivers-list');
+    const presRationaleText = document.getElementById('pres-rationale-text');
+    
+    if (presRiskLevel) {
+      presRiskLevel.textContent = `${report.riskLevel} Risk`;
+      presRiskLevel.className = `risk-badge ${report.riskLevel.toLowerCase()}`;
+    }
+    if (presBslLevel) presBslLevel.textContent = report.bslLevel;
+    if (presReviewRequired) {
+      presReviewRequired.textContent = reviewRequired;
+      presReviewRequired.style.color = reviewColor;
+    }
+    if (presRationaleText) presRationaleText.textContent = finalReasonText;
+    populateDriversList(presDriversList, report.indicators);
 
     if (printIndicatorsList) {
       printIndicatorsList.innerHTML = '';
