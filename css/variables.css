@@ -12,8 +12,8 @@
 
   /* Shadows */
   --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.35);
   --shadow-glow-indigo: 0 0 15px rgba(99, 102, 241, 0.15);
   
   /* Border Radius */
@@ -23,18 +23,18 @@
   --radius-full: 9999px;
 
   /* Theme: Dark Mode (Default) */
-  --bg-app: #090d16;
-  --bg-sidebar: #0f1524;
-  --bg-surface: #131b2e;
-  --bg-surface-elevated: #1a243c;
-  --bg-surface-hover: #1e2947;
+  --bg-app: #08111f;
+  --bg-sidebar: #08111f;
+  --bg-surface: #12203a;
+  --bg-surface-elevated: #12203a;
+  --bg-surface-hover: #192a4a;
   
-  --border-color: #202b44;
-  --border-focus: #4f46e5;
+  --border-color: rgba(255, 255, 255, 0.08);
+  --border-focus: #6366f1;
   
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
+  --text-primary: #ffffff;
+  --text-secondary: #d6dce8;
+  --text-muted: #8fa0dd;
   
   --primary: #6366f1;
   --primary-hover: #4f46e5;
@@ -44,24 +44,27 @@
   --secondary: #0ea5e9;
   
   /* Risk Semantic Colors - Dark Theme */
-  --risk-low: #10b981;
-  --risk-low-bg: rgba(16, 185, 129, 0.1);
-  --risk-low-border: rgba(16, 185, 129, 0.25);
+  --risk-low: #30d158;
+  --risk-low-bg: rgba(48, 209, 88, 0.18);
+  --risk-low-border: rgba(48, 209, 88, 0.35);
   
-  --risk-medium: #f59e0b;
-  --risk-medium-bg: rgba(245, 158, 11, 0.1);
-  --risk-medium-border: rgba(245, 158, 11, 0.25);
+  --risk-medium: #ff9f0a;
+  --risk-medium-bg: rgba(255, 159, 10, 0.18);
+  --risk-medium-border: rgba(255, 159, 10, 0.35);
   
-  --risk-high: #f43f5e;
-  --risk-high-bg: rgba(244, 63, 94, 0.1);
-  --risk-high-border: rgba(244, 63, 94, 0.25);
+  --risk-high: #ff3355;
+  --risk-high-bg: rgba(255, 51, 85, 0.18);
+  --risk-high-border: rgba(255, 51, 85, 0.35);
 
-  --scroll-thumb: #202b44;
-  --scroll-track: #090d16;
+  --scroll-thumb: #1e2947;
+  --scroll-track: #08111f;
 }
 
 /* Theme: Light Mode */
 [data-theme="light"] {
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -2px rgba(0, 0, 0, 0.04);
+
   --bg-app: #f4f6fa;
   --bg-sidebar: #ffffff;
   --bg-surface: #ffffff;

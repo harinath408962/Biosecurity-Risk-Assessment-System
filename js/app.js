@@ -539,21 +539,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const riskClass = report.riskLevel.toLowerCase();
       
       el.resultsClassificationReasonDetails.innerHTML = `
-        <div class="classified-row" style="display: flex; flex-direction: row; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
+        <div class="classified-row" style="display: flex; flex-direction: row; align-items: center; gap: 0.5rem; font-size: 1.05rem;">
           <strong style="color: var(--text-primary); width: 180px; flex-shrink: 0; font-weight: 600;">Risk Level:</strong>
-          <span class="risk-badge ${riskClass}" style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.75rem; padding: 0.2rem 0.5rem; border-radius: var(--radius-sm); font-weight: 600; text-transform: uppercase;">${report.riskLevel} Risk</span>
+          <span class="risk-badge ${riskClass}" style="display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.8rem; padding: 0.25rem 0.6rem; border-radius: var(--radius-sm); font-weight: 600; text-transform: uppercase;">${report.riskLevel} Risk</span>
         </div>
-        <div class="classified-row" style="display: flex; flex-direction: row; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
+        <div class="classified-row" style="display: flex; flex-direction: row; align-items: center; gap: 0.5rem; font-size: 1.05rem;">
           <strong style="color: var(--text-primary); width: 180px; flex-shrink: 0; font-weight: 600;">Detected Indicators:</strong>
           <span style="color: var(--text-secondary);">${indsList}</span>
         </div>
-        <div class="classified-row" style="display: flex; flex-direction: row; align-items: center; gap: 0.5rem; font-size: 0.9rem;">
+        <div class="classified-row" style="display: flex; flex-direction: row; align-items: center; gap: 0.5rem; font-size: 1.05rem;">
           <strong style="color: var(--text-primary); width: 180px; flex-shrink: 0; font-weight: 600;">Containment Level:</strong>
-          <span style="color: var(--primary); font-weight: 700; background: var(--primary-transparent); padding: 0.1rem 0.4rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">${report.bslLevel}</span>
+          <span style="color: var(--primary); font-weight: 700; background: var(--primary-transparent); padding: 0.15rem 0.5rem; border-radius: var(--radius-sm); border: 1px solid var(--border-color);">${report.bslLevel}</span>
         </div>
-        <div class="classified-row" style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.25rem; font-size: 0.9rem; border-top: 1px solid var(--border-color); padding-top: 0.75rem; margin-top: 0.25rem;">
+        <div class="classified-row" style="display: flex; flex-direction: column; align-items: flex-start; gap: 0.25rem; font-size: 1.05rem; border-top: 1px solid var(--border-color); padding-top: 0.75rem; margin-top: 0.25rem;">
           <strong style="color: var(--text-primary); font-weight: 600; margin-bottom: 0.25rem;">Decision Rationale:</strong>
-          <p style="color: var(--text-primary); line-height: 1.55; margin: 0; font-size: 0.9rem;">${report.classificationReason || 'The analysis did not produce a classification rationale statement.'}</p>
+          <p style="color: var(--text-primary); line-height: 1.55; margin: 0; font-size: 1.02rem;">${report.classificationReason || 'The analysis did not produce a classification rationale statement.'}</p>
         </div>
       `;
     }
@@ -569,7 +569,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <polyline points="22 4 12 14.01 9 11.01"/>
           </svg>
           <div class="no-indicators-title">No Dual-Use Hazards Flagged</div>
-          <div style="font-size:0.8rem;">Metabolic engineering parameters correspond to Biosafety Level 1 parameters.</div>
+          <div style="font-size:0.9rem;">Metabolic engineering parameters correspond to Biosafety Level 1 parameters.</div>
         </div>
       `;
     } else {
@@ -580,10 +580,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const cardHTML = `
           <div class="indicator-card ${borderClass}" id="indicator-card-${indicator.id}">
             <div class="indicator-header">
-              <span class="indicator-name" style="font-size: 1.05rem; font-weight: 700; color: var(--text-primary);">${indicator.title || indicator.name}</span>
+              <span class="indicator-name" style="font-size: 1.25rem; font-weight: 700; color: var(--text-primary);">${indicator.title || indicator.name}</span>
               <span class="risk-badge ${badgeClass}">${indicator.level}</span>
             </div>
-            <div class="indicator-details" style="display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.5rem; margin-bottom: 0.75rem; font-size: 0.85rem; line-height: 1.45;">
+            <div class="indicator-details" style="display: flex; flex-direction: column; gap: 0.6rem; margin-top: 0.5rem; margin-bottom: 0.75rem; font-size: 0.98rem; line-height: 1.45;">
               <div class="indicator-detail-row">
                 <strong style="color: var(--text-primary); font-weight: 600;">Meaning:</strong><br>
                 <span style="color: var(--text-secondary);">${indicator.meaning}</span>
@@ -608,6 +608,53 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
         el.resultsIndicatorsList.insertAdjacentHTML('beforeend', cardHTML);
       });
+    }
+
+    // Populate Print PDF elements
+    const printDocName = document.getElementById('print-doc-name');
+    const printDate = document.getElementById('print-date');
+    const printRiskLevel = document.getElementById('print-risk-level');
+    const printRiskScore = document.getElementById('print-risk-score');
+    const printConfidence = document.getElementById('print-confidence');
+    const printBsl = document.getElementById('print-bsl');
+    const printExecutiveSummary = document.getElementById('print-executive-summary');
+    const printBslLevel = document.getElementById('print-bsl-level');
+    const printBslName = document.getElementById('print-bsl-name');
+    const printBslDesc = document.getElementById('print-bsl-desc');
+    const printBslReason = document.getElementById('print-bsl-reason');
+    const printIndicatorsList = document.getElementById('print-indicators-list');
+    const printAbstractText = document.getElementById('print-abstract-text');
+
+    if (printDocName) printDocName.textContent = report.fileName;
+    if (printDate) printDate.textContent = new Date(report.timestamp).toLocaleString();
+    if (printRiskLevel) printRiskLevel.textContent = report.riskLevel + " Risk";
+    if (printRiskScore) printRiskScore.textContent = `${report.riskScore}%`;
+    if (printConfidence) printConfidence.textContent = `${report.confidenceScore}%`;
+    if (printBsl) printBsl.textContent = report.bslLevel;
+    if (printExecutiveSummary) printExecutiveSummary.textContent = report.explanation;
+    if (printBslLevel) printBslLevel.textContent = report.bslLevel;
+    if (printBslName) printBslName.textContent = meta.name;
+    if (printBslDesc) printBslDesc.textContent = meta.desc;
+    if (printBslReason) printBslReason.textContent = bslReasonText;
+    if (printAbstractText) printAbstractText.textContent = report.textInput;
+
+    if (printIndicatorsList) {
+      printIndicatorsList.innerHTML = '';
+      if (!report.indicators || report.indicators.length === 0) {
+        printIndicatorsList.innerHTML = '<p style="font-size: 1.1rem; color: #000000;">No dual-use indicators detected.</p>';
+      } else {
+        report.indicators.forEach(ind => {
+          const indHTML = `
+            <div class="print-indicator-item" style="margin-bottom: 1.8rem; padding-bottom: 1rem; border-bottom: 1.5px dashed #000000; page-break-inside: avoid;">
+              <h3 style="margin-bottom: 0.5rem; font-size: 1.35rem; font-weight: 700; color: #000000 !important; text-transform: capitalize;">${ind.title || ind.name}</h3>
+              <p style="margin: 0.35rem 0; font-size: 1.05rem; line-height: 1.5; color: #000000;"><strong>Meaning:</strong> ${ind.meaning}</p>
+              <p style="margin: 0.35rem 0; font-size: 1.05rem; line-height: 1.5; color: #000000;"><strong>Why Flagged:</strong> ${ind.whyFlagged}</p>
+              <p style="margin: 0.35rem 0; font-size: 1.05rem; line-height: 1.5; color: #000000;"><strong>Severity:</strong> ${ind.severity || ind.level}</p>
+            </div>
+          `;
+          printIndicatorsList.insertAdjacentHTML('beforeend', indHTML);
+        });
+      }
     }
 
     // 5. Connect highlighted click events to indicators scroll animations
